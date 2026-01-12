@@ -3,7 +3,7 @@
 
 // Fixed: SQL Injection - Using parameterized query
 function getUser(userId) {
-    var query = "SELECT * FROM users WHERE id = ?";
+    const query = "SELECT * FROM users WHERE id = ?";
     return database.execute(query, [userId]);
 }
 
