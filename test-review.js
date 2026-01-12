@@ -8,8 +8,8 @@ function getUser(userId) {
 }
 
 // Fixed: Hardcoded secret - Using environment variables
-const API_KEY = process.env.API_KEY;
-const PASSWORD = process.env.PASSWORD;
+const API_KEY = process.env.API_KEY || (() => { throw new Error('API_KEY environment variable is not set'); })();
+const PASSWORD = process.env.PASSWORD || (() => { throw new Error('PASSWORD environment variable is not set'); })();
 
 // Fixed: XSS vulnerability - Using textContent instead of innerHTML
 function displayName(name) {
@@ -72,7 +72,15 @@ function checkValue(val) {
  * @returns {number} The total sum of all item prices
  */
 function calculateTotal(items) {
-    return items.reduce((sum, item) => sum + item.price, 0);
+    if (!Array.isArray(items)) {
+        throw new Error('Items must be an array');
+    }
+    return items.reduce((sum, item) => {
+        if (typeof item.price !== 'number') {
+            throw new Error('Each item must have a numeric price property');
+        }
+        return sum + item.price;
+    }, 0);
 }
 
 module.exports = {
