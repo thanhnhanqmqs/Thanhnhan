@@ -77,7 +77,7 @@ def add_numbers(a, b):
 
 # Lỗi 14: String concatenation in loop (inefficient)
 def build_string(items):
-    result = ",".join(str(item) for item in items)
-    if items:
-        result += ","
+    result = ""
+    for item in items:
+        result += str(item) + ","
     return result
