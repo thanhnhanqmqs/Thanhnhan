@@ -1,75 +1,86 @@
 // test-review.js
 // File này có nhiều lỗi để test Copilot Review
 
-// Lỗi 1: SQL Injection
+// Fixed: SQL Injection - Using parameterized query
 function getUser(userId) {
-    var query = "SELECT * FROM users WHERE id = " + userId;
-    return database.execute(query);
+    const query = "SELECT * FROM users WHERE id = ?";
+    return database.execute(query, [userId]);
 }
 
-// Lỗi 2: Hardcoded secret
-const API_KEY = "sk-1234567890abcdef";
-const PASSWORD = "admin123";
+// Fixed: Hardcoded secret - Using environment variables
+const API_KEY = process.env.API_KEY || (() => { throw new Error('API_KEY environment variable is not set'); })();
+const PASSWORD = process.env.PASSWORD || (() => { throw new Error('PASSWORD environment variable is not set'); })();
 
-// Lỗi 3: XSS vulnerability
+// Fixed: XSS vulnerability - Using textContent instead of innerHTML
 function displayName(name) {
-    document.getElementById('user').innerHTML = name;
+    document.getElementById('user').textContent = name;
 }
 
-// Lỗi 4: No error handling
+// Fixed: No error handling - Added check for division by zero
 function divide(a, b) {
-    return a / b;  // Không check b === 0
+    if (b === 0) {
+        throw new Error('Division by zero');
+    }
+    return a / b;
 }
 
-// Lỗi 5: Using var
-var globalCount = 0;
+// Fixed: Using var - Changed to let
+let globalCount = 0;
 
-// Lỗi 6: Console.log
+// Fixed: Console.log - Removed console.log
 function processData(data) {
-    console.log("Processing:", data);
     return data.map(x => x * 2);
 }
 
-// Lỗi 7: High complexity
+// Fixed: High complexity - Simplified logic
 function complexFunction(a, b, c, d, e) {
-    if (a > 0) {
-        if (b > 0) {
-            if (c > 0) {
-                if (d > 0) {
-                    if (e > 0) {
-                        return a + b + c + d + e;
-                    }
-                }
-            }
-        }
+    if (a > 0 && b > 0 && c > 0 && d > 0 && e > 0) {
+        return a + b + c + d + e;
     }
     return 0;
 }
 
-// Lỗi 8: Unused variable
-const unusedVar = "never used";
+// Fixed: Unused variable - Removed unused variable
 
-// Lỗi 9: No null check
+// Fixed: No null check - Added null/undefined check
 function getName(user) {
-    return user.name. toUpperCase();  // user có thể null
+    if (!user || !user.name) {
+        throw new Error('User or user name is null/undefined');
+    }
+    return user.name.toUpperCase();
 }
 
-// Lỗi 10: Eval - nguy hiểm
+// Fixed: Eval - Replaced with safer Function constructor (or remove entirely)
 function runUserCode(code) {
-    eval(code);
+    // Eval is dangerous and should not be used
+    // If you need to execute user code, use a sandboxed environment
+    throw new Error('Executing user code is not allowed for security reasons');
 }
 
-// Lỗi 11: == instead of ===
+// Fixed: == instead of === - Using strict equality
 function checkValue(val) {
-    if (val == "123") {
+    if (val === "123") {
         return true;
     }
     return false;
 }
 
-// Lỗi 12: No JSDoc
+// Fixed: No JSDoc - Added JSDoc documentation
+/**
+ * Calculates the total price of all items
+ * @param {Array<{price: number}>} items - Array of items with price property
+ * @returns {number} The total sum of all item prices
+ */
 function calculateTotal(items) {
-    return items.reduce((sum, item) => sum + item.price, 0);
+    if (!Array.isArray(items)) {
+        throw new Error('Items must be an array');
+    }
+    return items.reduce((sum, item) => {
+        if (typeof item.price !== 'number') {
+            throw new Error('Each item must have a numeric price property');
+        }
+        return sum + item.price;
+    }, 0);
 }
 
 module.exports = {
