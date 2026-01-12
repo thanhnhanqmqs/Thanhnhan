@@ -6,13 +6,15 @@ import sys
 
 # Lỗi 1: SQL Injection
 def get_user(user_id):
-    query = "SELECT * FROM users WHERE id = " + str(user_id)
-    return database.execute(query)
+    query = "SELECT * FROM users WHERE id = %s"  
+    return database.execute(query, (user_id,))  
+e.execute(query)
 
 # Lỗi 2: Hardcoded credentials
-API_KEY = "sk-1234567890abcdef"
-PASSWORD = "admin123"
-DB_CONNECTION = "postgresql://admin:password@localhost/db"
+API_KEY = os.getenv("API_KEY")  
+PASSWORD = os.getenv("APP_PASSWORD")  
+DB_CONNECTION = os.getenv("DB_CONNECTION")  
+
 
 # Lỗi 3: Eval - nguy hiểm
 def run_user_code(code):
@@ -31,16 +33,32 @@ def risky_operation():
     try:
         # some code
         pass
-    except:   # Quá rộng! 
+    except Exception:   # Quá rộng! 
         pass
 
-# L��i 7: Mutable default argument
-def add_item(item, items=[]):
+# Lỗi 7: Mutable default argument  
+def add_item(item, items=None):  
+    if items is None:  
+        items = []  
     items.append(item)
     return items
 
 # Lỗi 8: No docstring
-def calculate_total(items):
+def calculate_total(items):  
+    """  
+    Calculate the total price from a collection of items.  
+
+    Parameters:  
+        items: An iterable of mapping-like objects where each item contains  
+            a 'price' key whose value is numeric.  
+
+    Returns:  
+        The sum of all 'price' values from the provided items.  
+
+    Raises:  
+        KeyError: If an item does not contain the 'price' key.  
+        TypeError: If the 'price' values are not numeric or items is not iterable.  
+    """  
     return sum(item['price'] for item in items)
 
 # Lỗi 9: Print instead of logging
@@ -50,20 +68,17 @@ def process_data(data):
 
 # Lỗi 10: File not closed
 def read_file(filename):
-    f = open(filename, 'r')
-    data = f.read()
-    return data  # File không được close! 
+        with open(filename, 'r') as f:  
+        data = f.read()  
+    with open(filename, 'r') as f:  
+        data = f.read()  
+    return data  # File được đóng tự động nhờ context manager  
 
 # Lỗi 11: Complex nested logic
 def complex_function(a, b, c, d, e, f):
-    if a > 0:
-        if b > 0:
-            if c > 0:
-                if d > 0:
-                    if e > 0:
-                        if f > 0:
-                            return a + b + c + d + e + f
-    return 0
+    if not (a > 0 and b > 0 and c > 0 and d > 0 and e > 0 and f > 0):  
+        return 0  
+    return a + b + c + d + e + f  
 
 # Lỗi 12: Global variable modification
 counter = 0
