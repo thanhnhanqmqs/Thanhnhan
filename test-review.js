@@ -13,7 +13,7 @@ const PASSWORD = "admin123";
 
 // Lỗi 3: XSS vulnerability
 function displayName(name) {
-    document.getElementById('user').innerHTML = name;
+    document.getElementById('user').textContent = name;
 }
 
 // Lỗi 4: No error handling
