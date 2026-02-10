@@ -47,7 +47,6 @@ function complexFunction(a, b, c, d, e) {
 }
 
 // Lỗi 8: Unused variable
-const unusedVar = "never used";
 
 // Lỗi 9: No null check
 function getName(user) {
