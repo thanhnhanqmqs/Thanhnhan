@@ -3,8 +3,8 @@
 
 // Lỗi 1: SQL Injection
 function getUser(userId) {
-    var query = "SELECT * FROM users WHERE id = " + userId;
-    return database.execute(query);
+    var query = "SELECT * FROM users WHERE id = ?";
+    return database.execute(query, [userId]);
 }
 
 // Lỗi 2: Hardcoded secret
